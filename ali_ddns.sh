@@ -3,15 +3,6 @@
 
 #Dependences: curl, openssl-util, tr, sort
 
-## ----- Setting -----
-AccessKeyId="testid"
-AccessKeySec="testsecret"
-DomainRecordId="00000"
-# DomainRR, use "@" to set top level domain
-DomainRR="www"
-DomainName="example.com"
-DomainType="A"
-
 # The server address of ALi API
 ALiServerAddr="alidns.aliyuncs.com"
 # A url provided by a third-party to echo the public IP of host
@@ -274,8 +265,10 @@ update_record()
 
 main()
 {
-	describe_record
-	#update_record
+	if [ -z "${DomainRecordId}" ]; then
+		DomainRecordId=$(describe_record | grep -Eo "\"RecordId\"\:\"[0-9]{17}" | tail -1 | grep -Eo "[0-9]{17}")
+	fi
+	update_record
 }
 
 main
